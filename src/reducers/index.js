@@ -1,6 +1,6 @@
 //STEP 3: here is where you make your reducer. 
 
-import {ADD_FEATURE} from '../actions/index'
+import {ADD_FEATURE, REMOVE_FEATURE} from '../actions/index'
 
 //STEP 6: move state into the reducer as initial State to access globally. 
 const initialState = {
@@ -27,8 +27,24 @@ export const reducer = (state=initialState, action)=>{
             return{
                 ...state,
                 car:{...state.car,
-                features:[ ...state.car.features, action.payload ]}
+                features:[ ...state.car.features, action.payload ]},
+                additionalPrice: state.additionalPrice + action.payload.price,
+                additionalFeatures: state.additionalFeatures.filter((item)=>{
+                    return item !== action.payload
+                })
             }
-        default: return state;
+        case REMOVE_FEATURE:
+            return {
+              ...state,
+              car: {...state.car, 
+                features: state.car.features.filter(item=>{
+                if(item.id !== action.payload.id){
+                  return item
+                }
+              })},
+              additionalPrice: state.additionalPrice - action.payload.price,
+              additionalFeatures: [...state.additionalFeatures, action.payload]
+            }
+        default: return (state);
     }
 }
